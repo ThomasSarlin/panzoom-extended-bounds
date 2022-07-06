@@ -6,6 +6,13 @@ declare module "panzoom" {
     bottom: number;
   }
 
+  interface BoundsPadding {
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+  }
+
   export interface TransformOrigin {
     x: number;
     y: number;
@@ -27,7 +34,7 @@ declare module "panzoom" {
     bounds?: boolean | Bounds;
     maxZoom?: number;
     minZoom?: number;
-    boundsPadding?: number;
+    boundsPadding?: number | BoundsPadding;
     zoomDoubleClickSpeed?: number;
     zoomSpeed?: number;
     initialX?: number,
@@ -87,6 +94,7 @@ declare module "panzoom" {
     setTransformOrigin: (newTransformOrigin: TransformOrigin) => void;
     getZoomSpeed: () => number;
     setZoomSpeed: (zoomSpeed: number) => void;
+    setbBoundsPadding: (boundsPadding: BoundsPadding) => void;
   }
 
   export default function createPanZoom(

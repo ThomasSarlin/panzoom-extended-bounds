@@ -62,8 +62,7 @@ function createPanZoom(domElement, options) {
   var bounds = options.bounds;
   var maxZoom = typeof options.maxZoom === 'number' ? options.maxZoom : Number.POSITIVE_INFINITY;
   var minZoom = typeof options.minZoom === 'number' ? options.minZoom : 0;
-
-  var boundsPadding = typeof options.boundsPadding === 'number' ? options.boundsPadding : 0.05;
+  var boundsPadding = options.boundsPadding || 0.05;
   var zoomDoubleClickSpeed = typeof options.zoomDoubleClickSpeed === 'number' ? options.zoomDoubleClickSpeed : defaultDoubleTapZoomSpeed;
   var beforeWheel = options.beforeWheel || noop;
   var beforeMouseDown = options.beforeMouseDown || noop;
@@ -72,6 +71,7 @@ function createPanZoom(domElement, options) {
   var textSelection = options.enableTextSelection ? fakeTextSelectorInterceptor : domTextSelectionInterceptor;
 
   validateBounds(bounds);
+  validateBoundsPadding(boundsPadding);
 
   if (options.autocenter) {
     autocenter();
@@ -146,7 +146,8 @@ function createPanZoom(domElement, options) {
     setTransformOrigin: setTransformOrigin,
 
     getZoomSpeed: getZoomSpeed,
-    setZoomSpeed: setZoomSpeed
+    setZoomSpeed: setZoomSpeed,
+    setBoundsPadding: setBoundsPadding
   };
 
   eventify(api);
@@ -302,6 +303,11 @@ function createPanZoom(domElement, options) {
     makeDirty();
   }
 
+  function setBoundsPadding(value) {
+    boundsPadding = value;
+    keepTransformInsideBounds();
+  }
+
   function moveBy(dx, dy) {
     moveTo(transform.x + dx, transform.y + dy);
   }
@@ -356,6 +362,15 @@ function createPanZoom(domElement, options) {
       var sceneWidth = ownerRect.width;
       var sceneHeight = ownerRect.height;
 
+      if (typeof boundsPadding === 'object'){
+        
+        return {
+          left: sceneWidth * boundsPadding.left,
+          top: sceneHeight * boundsPadding.top,
+          right: sceneWidth * (1 - boundsPadding.right),
+          bottom: sceneHeight * (1 - boundsPadding.bottom)
+        };
+      }
       return {
         left: sceneWidth * boundsPadding,
         top: sceneHeight * boundsPadding,
@@ -1004,6 +1019,23 @@ function validateBounds(bounds) {
       'undefined, boolean (true|false) or an object {left, top, right, bottom}'
     );
 }
+function validateBoundsPadding(boundsPadding) {
+  var boundsPadding = typeof bounds;
+  if (boundsType === 'undefined' || boundsType === 'number') return; // this is okay
+  // otherwise need to be more thorough:
+  var validBounds =
+    isNumber(boundsPadding.left) &&
+    isNumber(boundsPadding.top) &&
+    isNumber(boundsPadding.bottom) &&
+    isNumber(boundsPadding.right);
+
+  if (!validBounds)
+    throw new Error(
+      'Bounds object is not valid. It can be: ' +
+      'undefined, boolean (true|false) or an object {left, top, right, bottom}'
+    );
+}
+
 
 function isNumber(x) {
   return Number.isFinite(x);

@@ -1020,16 +1020,16 @@ function validateBounds(bounds) {
     );
 }
 function validateBoundsPadding(boundsPadding) {
-  var boundsPadding = typeof bounds;
-  if (boundsType === 'undefined' || boundsType === 'number') return; // this is okay
+  var boundsPaddingType = typeof boundsPadding;
+  if (boundsPaddingType === 'undefined' || boundsPaddingType === 'number') return; // this is okay
   // otherwise need to be more thorough:
-  var validBounds =
+  var validBoundsPadding =
     isNumber(boundsPadding.left) &&
     isNumber(boundsPadding.top) &&
     isNumber(boundsPadding.bottom) &&
     isNumber(boundsPadding.right);
 
-  if (!validBounds)
+  if (!validBoundsPadding)
     throw new Error(
       'Bounds object is not valid. It can be: ' +
       'undefined, boolean (true|false) or an object {left, top, right, bottom}'

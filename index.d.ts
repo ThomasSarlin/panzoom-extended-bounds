@@ -94,7 +94,7 @@ declare module "panzoom" {
     setTransformOrigin: (newTransformOrigin: TransformOrigin) => void;
     getZoomSpeed: () => number;
     setZoomSpeed: (zoomSpeed: number) => void;
-    setbBoundsPadding: (boundsPadding: BoundsPadding) => void;
+    setBoundsPadding: (boundsPadding: BoundsPadding) => void;
   }
 
   export default function createPanZoom(
